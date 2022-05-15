@@ -1,0 +1,20 @@
+GET http://localhost:4000/
+
+###
+POST http://localhost:4000/
+Content-Type: application/json
+
+{
+    "title" : "testb",
+    "content" : "hello"
+}
+
+
+###
+PATCH http://localhost:4000/update/626e7642af4425e78e69ed5c
+Content-Type: application/json
+
+{
+    "title" : "x1",
+    "content" : "x1"
+}
