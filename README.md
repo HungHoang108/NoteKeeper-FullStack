@@ -1,3 +1,3 @@
 # NoteKeeper-FullStack
 
-Hi, please select Master branch to see the project. Thank you!
+Please select Master branch to see the project. Thank you!
