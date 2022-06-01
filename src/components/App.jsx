@@ -21,7 +21,7 @@ function App() {
   useEffect(()=> {
 
     async function fetchData(){
-      const heading1 = await axios.get("http://localhost:4000/")
+      const heading1 = await axios.get("http://localhost:9000/")
       setNotes(heading1.data);
     }
     fetchData();
@@ -32,7 +32,7 @@ function App() {
 
   function deleteNote(mongoID) {
 
-    axios.delete(`http://localhost:4000/${mongoID}`)
+    axios.delete(`http://localhost:9000/${mongoID}`)
     .then(()=> {
     //   setNotes(prevNotes => {
     //   return prevNotes.filter((noteItem, index) => {
@@ -83,7 +83,7 @@ function App() {
 
   function submitNote(){
 
-    axios.patch(`http://localhost:4000/update/${keeperId}`, { 
+    axios.patch(`http://localhost:9000/update/${keeperId}`, { 
       title: editedNote.title,
       content: editedNote.content
     })

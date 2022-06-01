@@ -9,7 +9,7 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
-mongoose.connect(process.env.DATABASE_LINK, {
+mongoose.connect("mongodb+srv://hunghoang1:12345678!@cluster0.0mgjk.mongodb.net/keeperDB?retryWrites=true&w=majority", {
     useNewUrlParser: true
     // useUnifiedTopology: true
 })
@@ -76,6 +76,6 @@ app.delete("/:id" , (req, res)=>{
         })
     }
   )
-app.listen(process.env.PORT ||4000, (req, res)=>{
+app.listen(process.env.PORT || 9000, (req, res)=>{
     console.log("server is running")
 })

@@ -26,7 +26,7 @@ function CreateArea(props) {
       content: ""
     });
 
-    axios.post("http://localhost:4000/", note)
+    axios.post("http://localhost:9000/", note)
     .then(response => console.log(response.data))
     
   }
