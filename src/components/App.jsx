@@ -4,6 +4,8 @@ import Footer from "./Footer";
 import Note from "./Note";
 import CreateArea from "./CreateArea";
 import axios from "axios";
+import {Routes, Route} from "react-router-dom";
+
 
 function App() {
   const [notes, setNotes] = useState([]);
@@ -14,49 +16,31 @@ function App() {
     title: "" ,
     content: ""
   });
+  const [noteFilteredArray, setNoteFilteredArray] = useState([]);
+  const [searchStatus, setSearchStatus] = useState(true);
 
-  const keeperId = noteID;
 
 
   useEffect(()=> {
-
     async function fetchData(){
       const heading1 = await axios.get("http://localhost:9000/")
       setNotes(heading1.data);
     }
     fetchData();
-
 }, [])
 
 
-
   function deleteNote(mongoID) {
-
     axios.delete(`http://localhost:9000/${mongoID}`)
     .then(()=> {
-    //   setNotes(prevNotes => {
-    //   return prevNotes.filter((noteItem, index) => {
-    //     return noteItem !== noteItem._id;
-    //   });
-    // })
+
     setNotes(notes.map((oneNote) => {
       return oneNote._id !== mongoID ? oneNote : null
     }))
   });
     window.location.reload();
-
   }
-  // TEST THE RELOAD ISSUE, BUT NOT WORK
 
-  // async function deleteNote(mongoID){
-  //   const data = await fetch(`http://localhost:4000/${mongoID}`, {
-  //     method: "DELETE"
-  //   }).then(res => res.json())
-  //   setNotes(notes => notes.filter(note => note._id !== data._id))
-  // }
-
-
-  // FOR EDITING NOTE PART
 
   function editNote(mongoid, id) {
     setEdit(true);
@@ -66,12 +50,9 @@ function App() {
       title: notes[id].title,
       content: notes[id].content
     });
-
-
   }
 
   function handleEdit(event){
-
     const {name, value} = event.target; 
     setEditedNote(prevNoted => {
       return {
@@ -82,24 +63,34 @@ function App() {
   }
 
   function submitNote(){
-
-    axios.patch(`http://localhost:9000/update/${keeperId}`, { 
+    axios.patch(`http://localhost:9000/update/${noteID}`, { 
       title: editedNote.title,
       content: editedNote.content
     })
-    console.log(keeperId)
     // event.preventDefault();
     setEdit(false);
     window.location.reload();
   }
 
+  function searchQueryReceived(searchQuery){
+    
+    const filteredArray= notes.filter((noteFilter)=>{
+      return noteFilter.content.toLowerCase().includes(searchQuery)
+      
+    })
+    console.log(filteredArray)
+    setNoteFilteredArray(filteredArray)
+    setSearchStatus(false)
+  }
+
 
   return (
-    <div>
-      <Header />
-      <CreateArea 
 
+      <div>
+      <Header
+        query={searchQueryReceived}
       />
+      <CreateArea />
 
 {edit? 
 (
@@ -126,7 +117,38 @@ function App() {
   </div>
 ) : ""}
 
-      {notes.map((noteItem, index) => {
+{searchStatus? 
+
+  notes.map((noteItem, index) => {
+    return (
+      <Note
+        key={index}
+        id={index}
+        title={noteItem.title}
+        content={noteItem.content}
+        mongoID = {noteItem._id}
+        onDelete={deleteNote}
+        onEditing={editNote}
+      />
+    );
+  })
+
+  : noteFilteredArray.map((noteFilter, index) => {
+    return (
+      <Note
+        key={index}
+        id={index}
+        title={noteFilter.title}
+        content={noteFilter.content}
+        mongoID = {noteFilter._id}
+        onDelete={deleteNote}
+        onEditing={editNote}
+      />
+    );
+  })
+}
+
+      {/* {notes.map((noteItem, index) => {
         return (
           <Note
             key={index}
@@ -137,12 +159,26 @@ function App() {
             onDelete={deleteNote}
             onEditing={editNote}
           />
-          
         );
-        
-      })}
+      })} */}
+
+      {/* {noteFilteredArray.map((noteFilter, index) => {
+        return (
+          <Note
+            key={index}
+            id={index}
+            title={noteFilter.title}
+            content={noteFilter.content}
+            mongoID = {noteFilter._id}
+            onDelete={deleteNote}
+            onEditing={editNote}
+          />
+        );
+      })} */}
+
       <Footer />
-    </div>
+      </div>
+
   );
 }
 
